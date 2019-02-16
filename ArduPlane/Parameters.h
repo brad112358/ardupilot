@@ -525,6 +525,10 @@ public:
     // whether to enforce acceptance of packets only from sysid_my_gcs
     AP_Int8 sysid_enforce;
 
+#if TOY_MODE_ENABLED == ENABLED
+    ToyMode toy_mode;
+#endif
+
 #if SOARING_ENABLED == ENABLED
     // ArduSoar parameters
     SoaringController soaring_controller;

@@ -44,6 +44,9 @@ const AP_Scheduler::Task Plane::scheduler_tasks[] = {
     SCHED_TASK(update_GPS_10Hz,        10,    400),
     SCHED_TASK(navigate,               10,    150),
     SCHED_TASK(update_compass,         10,    200),
+#if TOY_MODE_ENABLED == ENABLED
+    SCHED_TASK_CLASS(ToyMode,              &plane.g2.toy_mode,         update,          10,  50),
+#endif
     SCHED_TASK(read_airspeed,          10,    100),
     SCHED_TASK(update_alt,             10,    200),
     SCHED_TASK(adjust_altitude_target, 10,    200),

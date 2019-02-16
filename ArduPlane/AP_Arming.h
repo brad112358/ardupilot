@@ -8,6 +8,7 @@
 class AP_Arming_Plane : public AP_Arming
 {
 public:
+    friend class ToyMode;
     AP_Arming_Plane()
         : AP_Arming()
     {

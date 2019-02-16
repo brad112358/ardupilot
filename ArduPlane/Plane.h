@@ -112,6 +112,10 @@
 #include <AP_Scripting/AP_Scripting.h>
 #endif
 
+#if TOY_MODE_ENABLED == ENABLED
+ # include "toy_mode.h"
+#endif
+
 #include "RC_Channel.h"     // RC Channel Library
 #include "Parameters.h"
 #include "avoidance_adsb.h"
@@ -155,8 +159,11 @@ public:
     friend class AP_AdvancedFailsafe_Plane;
     friend class AP_Avoidance_Plane;
     friend class GCS_Plane;
+    friend class RC_Channel;
+    friend class RC_Channels;
     friend class RC_Channel_Plane;
     friend class RC_Channels_Plane;
+    friend class ToyMode;
 
     Plane(void);
 

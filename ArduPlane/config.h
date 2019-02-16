@@ -352,6 +352,10 @@
  #endif
 #endif
 
+#ifndef TOY_MODE_ENABLED
+#define TOY_MODE_ENABLED DISABLED
+#endif
+
 #ifndef STATS_ENABLED
  # define STATS_ENABLED ENABLED
 #endif

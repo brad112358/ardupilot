@@ -1211,6 +1211,12 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @User: Advanced
     AP_GROUPINFO("DSPOILER_CROW_W2", 18, ParametersG2, crow_flap_weight2, 0),
     
+#if TOY_MODE_ENABLED == ENABLED
+    // @Group: TMODE
+    // @Path: toy_mode.cpp
+    AP_SUBGROUPINFO(toy_mode, "TMODE", 20, ParametersG2, ToyMode),
+#endif
+
     AP_GROUPEND
 };
 
