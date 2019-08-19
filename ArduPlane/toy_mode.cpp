@@ -10,9 +10,6 @@
 #define TOY_LAND_ARM_COUNT 1
 #define TOY_RIGHT_PRESS_COUNT 1
 #define TOY_ACTION_DELAY_MS 200
-#define TOY_DESCENT_SLOW_HEIGHT 5
-#define TOY_DESCENT_SLOW_RAMP 3
-#define TOY_DESCENT_SLOW_MIN 300
 #define TOY_RESET_TURTLE_TIME 5000
 
 typedef enum FlightMode control_mode_t;
@@ -28,17 +25,17 @@ const AP_Param::GroupInfo ToyMode::var_info[] = {
 
     // @Param: _MODE1
     // @DisplayName: Tmode first mode
-    // @Description: This is the initial mode when the vehicle is first turned on. This mode is assumed to not require GPS
+    // @Description: This is the initial mode when the vehicle is first turned on. This mode is assumed to require GPS
     // @Values: 0:Stabilize,1:Acro,2:AltHold,3:Auto,4:Guided,5:Loiter,6:RTL,7:Circle,9:Land,11:Drift,13:Sport,14:Flip,15:AutoTune,16:PosHold,17:Brake,18:Throw,19:Avoid_ADSB,20:Guided_NoGPS,21:FlowHold
     // @User: Standard
-    AP_GROUPINFO("_MODE1", 2, ToyMode, primary_mode[0], CIRCLE),
+    AP_GROUPINFO("_MODE1", 2, ToyMode, primary_mode[0], CRUISE),
 
     // @Param: _MODE2
     // @DisplayName: Tmode second mode
-    // @Description: This is the secondary mode. This mode is assumed to require GPS
+    // @Description: This is the secondary mode. This mode is assumed to not require GPS
     // @Values: 0:Stabilize,1:Acro,2:AltHold,3:Auto,4:Guided,5:Loiter,6:RTL,7:Circle,9:Land,11:Drift,13:Sport,14:Flip,15:AutoTune,16:PosHold,17:Brake,18:Throw,19:Avoid_ADSB,20:Guided_NoGPS,21:FlowHold
     // @User: Standard
-    AP_GROUPINFO("_MODE2", 3, ToyMode, primary_mode[1], LOITER),
+    AP_GROUPINFO("_MODE2", 3, ToyMode, primary_mode[1], FLY_BY_WIRE_A),
 
     // @Param: _ACTION1
     // @DisplayName: Tmode action 1
@@ -471,7 +468,7 @@ plane.geofence_set_enabled(true, AUTO_TOGGLED);
         } else if (old_mode == RTL) {
             // switch between RTL and LOITER when in GPS modes
             new_mode = LOITER;
-        } else if (old_mode == QLAND) {
+        } else if (old_mode == LOITER) {
             if (last_set_mode == QLAND || !plane.have_position) {
                 // this is a land that we asked for, or we don't have good positioning
                 new_mode = CIRCLE;
@@ -490,7 +487,7 @@ plane.geofence_set_enabled(true, AUTO_TOGGLED);
         break;
     }
 
-    if (!plane.arming.is_armed() && (plane.control_mode == QLAND || plane.control_mode == RTL)) {
+    if (!plane.arming.is_armed() && (plane.control_mode == QLAND || plane.control_mode == CIRCLE || plane.control_mode == RTL)) {
         // revert back to last primary flight mode if disarmed after landing
         new_mode = control_mode_t(primary_mode[last_mode_choice].get());
     }
@@ -632,6 +629,8 @@ void ToyMode::action_arm(void)
     bool needs_gps;
 
     switch (plane.control_mode) {
+    case FLY_BY_WIRE_B:
+    case CRUISE:
     case AUTO:
     case RTL:
     case LOITER:

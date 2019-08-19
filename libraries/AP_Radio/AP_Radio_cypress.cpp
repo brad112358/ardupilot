@@ -12,6 +12,7 @@
 #include "telem_structure.h"
 #include <AP_Notify/AP_Notify.h>
 #include <GCS_MAVLink/GCS_MAVLink.h>
+#include <hwdef.h>
 
 /*
   driver for CYRF6936 radio
@@ -1557,6 +1558,16 @@ void AP_Radio_cypress::send_telem_packet(void)
     t_status.flight_mode = AP_Notify::flags.flight_mode;
     t_status.tx_max = get_tx_max_power();
     t_status.note_adjust = get_tx_buzzer_adjust();
+
+#if TOY_MODE_ENABLED == ENABLED
+#ifdef TOY_MODE_PLANE_MODES
+    switch (t_status.flight_mode) {
+    case 5:
+        t_status.flight_mode = 2;
+        break;
+    }
+#endif
+#endif
 
     // send fw update packet for 7/8 of packets if any data pending
     if (fwupload.length != 0 &&
